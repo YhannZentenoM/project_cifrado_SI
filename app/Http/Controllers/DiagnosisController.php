@@ -8,6 +8,10 @@ use Illuminate\Support\Facades\Hash;
 
 class DiagnosisController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
     /**
      * Display a listing of the resource.
      *
@@ -36,23 +40,31 @@ class DiagnosisController extends Controller
      */
     public function store(Request $request)
     {
-        $data = [
-            'id_patient' => $request->input('patient'),
-            'diagnosis' => $request->input('diagnosis'),
-            'prescription' => $request->input('prescription'),
-        ];
-        $keypublica = \openssl_pkey_get_public(\file_get_contents('./publica.key'));
-        \openssl_public_encrypt(\json_encode($data), $datos_cifrados, $keypublica);
+        // $rsa = new RSA();
+        $keys = GenerarClaves();
+        $e = $keys['publica'];
+        $d = $keys['privada'];
+        $m = $keys['modulo'];
+
+        echo $e."---".$d."----".$m;
+        // $data = [
+        //     'id_patient' => $request->input('patient'),
+        //     'diagnosis' => $request->input('diagnosis'),
+        //     'prescription' => $request->input('prescription'),
+        // ];
+        // $keypublica = \openssl_pkey_get_public(\file_get_contents('./publica.key'));
+        // \openssl_public_encrypt(\json_encode($data), $datos_cifrados, $keypublica);
 
         //DESCIFRAR
         // $keyprivada = \openssl_pkey_get_private(\file_get_contents('./privada.key'));
         // openssl_private_decrypt($datos_cifrados, $datos_descifrados, $keyprivada);
         // echo $r = Hash::make($datos_cifrados);
-        $d = new Diagnosis();
-        $d->diagnosis = base64_encode($datos_cifrados);
-        $d->save();
+        
+        // $d = new Diagnosis();
+        // $d->diagnosis = base64_encode($datos_cifrados);
+        // $d->save();
 
-        return \redirect()->route('home');
+        // return \redirect()->route('home');
     }
 
     /**
