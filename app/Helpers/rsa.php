@@ -128,7 +128,7 @@
 		$codigos = array();
 		for ($i = 0; $i < strlen($texto); $i++) {
 			$nro = ord($texto[$i]);
-			$codigos[] = $this->expMod($nro, $e, $m);
+			$codigos[] = expMod($nro, $e, $m);
 		}
 		return implode(' ', $codigos);
 	}
@@ -152,7 +152,7 @@
 		$codigos = explode(' ', $texto_encriptado);
 		$texto = '';
 		foreach($codigos as $codigo) {
-			$texto .= chr($this->expMod(intval($codigo), $d, $m));
+			$texto .= chr(expMod(intval($codigo), $d, $m));
 		}
 		return base64_decode($texto);
 	}

@@ -19,7 +19,15 @@ class DiagnosisController extends Controller
      */
     public function index()
     {
-        return view('home');
+        $diagnosis = Diagnosis::get();
+        $array_diagnosis = [];
+        if(!empty($diagnosis)){
+            foreach ($diagnosis as $value) {
+                $response = DesencriptarTexto(base64_decode($value->diagnosis), base64_decode($value->private_key), $value->module);
+                array_push($array_diagnosis, json_decode($response));
+            }
+        }
+        return view('home', ['diagnosis' => $array_diagnosis]);
     }
 
     /**
@@ -43,15 +51,16 @@ class DiagnosisController extends Controller
         // $rsa = new RSA();
         $keys = GenerarClaves();
         $e = $keys['publica'];
-        $d = $keys['privada'];
+        $p = $keys['privada'];
         $m = $keys['modulo'];
 
-        echo $e."---".$d."----".$m;
-        // $data = [
-        //     'id_patient' => $request->input('patient'),
-        //     'diagnosis' => $request->input('diagnosis'),
-        //     'prescription' => $request->input('prescription'),
-        // ];
+        // echo $e."---".$d."----".$m;
+        $data = [
+            'id_patient' => $request->input('patient'),
+            'diagnosis' => $request->input('diagnosis'),
+            'prescription' => $request->input('prescription'),
+        ];
+        $datos_cifrados = EncriptarTexto(\json_encode($data), $e, $m);
         // $keypublica = \openssl_pkey_get_public(\file_get_contents('./publica.key'));
         // \openssl_public_encrypt(\json_encode($data), $datos_cifrados, $keypublica);
 
@@ -59,12 +68,17 @@ class DiagnosisController extends Controller
         // $keyprivada = \openssl_pkey_get_private(\file_get_contents('./privada.key'));
         // openssl_private_decrypt($datos_cifrados, $datos_descifrados, $keyprivada);
         // echo $r = Hash::make($datos_cifrados);
-        
-        // $d = new Diagnosis();
-        // $d->diagnosis = base64_encode($datos_cifrados);
-        // $d->save();
 
-        // return \redirect()->route('home');
+        // echo $datos_cifrados."<br>";
+        // echo DesencriptarTexto($datos_cifrados, $d, $m);
+        
+        $d = new Diagnosis();
+        $d->diagnosis = base64_encode($datos_cifrados);
+        $d->private_key = base64_encode($p);
+        $d->module = $m;
+        $d->save();
+
+        return \redirect()->route('diagnosis.home');
     }
 
     /**

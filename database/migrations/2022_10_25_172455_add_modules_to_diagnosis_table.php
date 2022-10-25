@@ -13,11 +13,8 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('diagnosis', function (Blueprint $table) {
-            $table->id();
-            $table->text('diagnosis');
-            $table->text('private_key');
-            $table->timestamps();
+        Schema::table('diagnosis', function (Blueprint $table) {
+            $table->text('module');
         });
     }
 
@@ -28,6 +25,8 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('diagnosis');
+        Schema::table('diagnosis', function (Blueprint $table) {
+            //
+        });
     }
 };
