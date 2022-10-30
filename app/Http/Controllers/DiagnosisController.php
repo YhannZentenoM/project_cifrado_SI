@@ -21,13 +21,26 @@ class DiagnosisController extends Controller
     {
         $diagnosis = Diagnosis::get();
         $array_diagnosis = [];
+        $cont = 0;
         if(!empty($diagnosis)){
             foreach ($diagnosis as $value) {
                 $response = DesencriptarTexto(base64_decode($value->diagnosis), base64_decode($value->private_key), $value->module);
-                array_push($array_diagnosis, json_decode($response));
+                $response = json_decode($response);
+                $array_diagnosis[$cont] = array(
+                    'id' => $value->id,
+                    'id_patient' => $response->id_patient,
+                    'diagnosis' => $response->diagnosis,
+                    'prescription' => $response->prescription
+                );
+                $cont++;
+                // $response = array("id" => $value->id);
+                // array_push($array_diagnosis, json_decode($response));
             }
+            // array_push($response, $value->id);
+            // var_dump($array_diagnosis);
         }
-        return view('home', ['diagnosis' => $array_diagnosis]);
+        // var_dump($array_diagnosis);
+        return view('diagnosis', ['diagnosis' => $array_diagnosis]);
     }
 
     /**
@@ -71,10 +84,11 @@ class DiagnosisController extends Controller
 
         // echo $datos_cifrados."<br>";
         // echo DesencriptarTexto($datos_cifrados, $d, $m);
-        
+            
         $d = new Diagnosis();
         $d->diagnosis = base64_encode($datos_cifrados);
         $d->private_key = base64_encode($p);
+        $d->public_key = base64_encode($e);
         $d->module = $m;
         $d->save();
 
@@ -89,7 +103,7 @@ class DiagnosisController extends Controller
      */
     public function show($id)
     {
-        //
+        return Diagnosis::find($id);
     }
 
     /**
@@ -124,5 +138,10 @@ class DiagnosisController extends Controller
     public function destroy($id)
     {
         //
+    }
+
+    public function home()
+    {
+        return view('home');
     }
 }

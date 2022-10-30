@@ -3,7 +3,7 @@
 @section('content')
 <div class="container">
     <div class="row justify-content-center">
-        <div class="col-md-6">
+        <div class="col-md-12">
             <div class="card">
                 <div class="card-header">{{ __('Datos generales') }}</div>
 
@@ -29,37 +29,6 @@
                         </div>
                         <button type="submit" class="btn btn-primary float-end">Guardar</button>
                     </form>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-6">
-            <div class="card">
-                <div class="card-header">{{ __('Pacientes atendidos') }}</div>
-
-                <div class="card-body">
-                    @if (session('status'))
-                        <div class="alert alert-success" role="alert">
-                            {{ session('status') }}
-                        </div>
-                    @endif
-                    <table class="table">
-                        <thead>
-                            <tr>
-                                <th>Paciente</th>
-                                <th>Diagnostico</th>
-                                <th>Receta</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach ($diagnosis as $item)
-                                <tr>
-                                    <td>{{ $item->id_patient }}</td>
-                                    <td>{{ $item->diagnosis }}</td>
-                                    <td>{{ $item->prescription }}</td>
-                                </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
                 </div>
             </div>
         </div>

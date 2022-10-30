@@ -23,5 +23,7 @@ Auth::routes();
 
 Auth::routes();
 
-Route::get('/home', [App\Http\Controllers\DiagnosisController::class, 'index'])->name('diagnosis.home');
+Route::get('/diagnosis', [App\Http\Controllers\DiagnosisController::class, 'index'])->name('diagnosis.index');
+Route::get('/home', [App\Http\Controllers\DiagnosisController::class, 'home'])->name('diagnosis.home');
 Route::post('/diagnosis', [App\Http\Controllers\DiagnosisController::class, 'store'])->name('diagnosis.store');
+Route::get('/diagnosis/{item}', [App\Http\Controllers\DiagnosisController::class, 'show'])->name('diagnosis.show');
